@@ -1,0 +1,8 @@
+# TeamsFx files
+node_modules
+dist
+.env
+.data
+.vscode
+.DS_Store
+

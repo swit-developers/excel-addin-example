@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Sign in to Swit</title>
+    </head>
+    <body>
+        <div id="message"></div>
+        <script type="text/javascript" defer="true">
+            const url = new URL(location);
+            if(url.searchParams.get("initiating")){
+                location.href =  "/oauth/authorize?dialog=" + btoa(location.pathname);
+            }else{
+                const token = url.searchParams.get("token") || "";
+                localStorage.setItem("token", token);
+                document.querySelector('#message').innerHTML = "로그인 완료. 창을 닫아주세요.";
+            }
+        </script>
+    </body>
+    
+</html>
