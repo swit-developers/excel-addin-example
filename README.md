@@ -72,4 +72,4 @@
 
    - Make sure each column has the data format specified at https://developers.swit.io/documentation#create-a-task.
 
-7. 
+7. Column J will tell you whether each task has been created successfully.
