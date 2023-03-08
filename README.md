@@ -56,4 +56,12 @@
 
 1. Open a file on the web Excel.
 2. Under **Insert**, click **Add-ins**, then **Upload My Add-in**.
+
+   ![image](https://user-images.githubusercontent.com/61765788/223762089-7107cb84-6929-4421-8b98-92350f0f9890.png)
+
 3. Upload the **manifest.xml** file from the `client/dist` directory.
+4. Move to the **Home** ribbon, and launch the **Import tasks** add-in.
+5. In the add-in, sign in to your Swit account and create a template.
+6. In each row, fill in the details of the task to add.
+
+   - Make sure each column has the data format specified at https://developers.swit.io/documentation#create-a-task.
