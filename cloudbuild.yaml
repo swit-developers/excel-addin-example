@@ -1,13 +1,23 @@
 steps:
   # Install dependencies
   # 참고 : https://cloud.google.com/build/docs/building/build-nodejs?hl=ko
-  - name: node
+  - name: Install dependencies
     entrypoint: npm
     args: 
-      - 'install'
-      # - '-r'
-      # - 'requirements.txt'
-      # - '--user'
+      - 'install-all'
+
+  - name: Build the server
+    entrypoint: npm
+    args: 
+      - run
+      - build
+
+  - name: Build the client
+    entrypoint: npx
+    args: 
+      - webpack
+      - --mode production
+      - --env domain=$_GCR_HOSTNAME
 
   # Docker Build
   - name: 'gcr.io/cloud-builders/docker'

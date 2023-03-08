@@ -4,8 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 const path = require("path");
-const urlDev = "https://localhost:3000/";
-const urlProd = "https://www.contoso.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
+const urlDev = "https://localhost:3000";
 
 module.exports = async (env, options) => {
   const dev = options.mode === "development";
@@ -83,7 +82,7 @@ module.exports = async (env, options) => {
               } else {
                 return content
                   .toString()
-                  .replace(new RegExp(urlDev, "g"), urlProd);
+                  .replace(new RegExp(urlDev, "g"), env.domain);
               }
             },
           },

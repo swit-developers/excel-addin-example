@@ -23,6 +23,14 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET ??
 import express, {Request, Response} from "express";
 const app = express();
 
+// Apply security best practices with helmet middleware
+import helmet from 'helmet';
+app.use(helmet());
+
+// Apply gzip compression to improve performance
+import compression from 'compression';
+app.use(compression());
+
 // Get request body
 app.use(express.json());
 
@@ -32,13 +40,15 @@ app.use("/", express.static(htmlDirectory));
 
 // Add cookie parser
 import cookieParser from "cookie-parser";
-import { ParsedQs } from "qs";
 app.use(cookieParser());
 
 // Database
-const dataDir = path.join(__dirname, "../.data");
 const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database(path.join(dataDir, "swit-tasks.db"));
+const dataDirectory = path.join(__dirname, "../.data");
+if (!fs.existsSync(dataDirectory)) {
+    fs.mkdirSync(dataDirectory);
+}
+const db = new sqlite3.Database(path.join(dataDirectory, "swit-tasks.db"));
 db.run(
     "CREATE TABLE IF NOT EXISTS tokens (client_token TEXT UNIQUE, user_id VARCHAR(20), expires_at INTEGER, access_token TEXT, refresh_token TEXT)",
     (err: { message: any; }) => {
@@ -396,17 +406,26 @@ async function getSwitToken(req: Request, refresh = false) {
     }
 }
 
-// Create a NodeJS HTTPS listener on port 3000 that points to the Express app
-// Use a callback function to tell when the server is created.
-const PORT = 3000;
-https
-    .createServer(
-        {
-            key: fs.readFileSync(path.join(dataDir, "key.pem")),
-            cert: fs.readFileSync(path.join(dataDir, "cert.pem")),
-        },
-        app
-    )
-    .listen(PORT, () => {
-        console.log(`Express is running on https://localhost:${PORT}`);
+// Determine whether to use a self-signed certificate or not
+if (process.env.NODE_ENV === 'production') {
+    // Start the server using HTTPS with a real SSL certificate
+    const PORT = 8080;
+    const HOST = '0.0.0.0';
+    app.listen(PORT, HOST, () => {
+        console.log(`App listening on http://${HOST}:${PORT}`);
     });
+} else {
+    // Start the server using a self-signed certificate for local development
+    const PORT = 3000;
+    https
+        .createServer(
+            {
+                key: fs.readFileSync(path.join(__dirname, "../key.pem")),
+                cert: fs.readFileSync(path.join(__dirname, "../cert.pem")),
+            },
+            app
+        )
+        .listen(PORT, () => {
+            console.log(`Express is running on https://localhost:${PORT}`);
+        });
+}
