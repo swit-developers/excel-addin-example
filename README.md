@@ -72,4 +72,6 @@
 
    - Make sure each column has the data format specified at https://developers.swit.io/documentation#create-a-task.
 
-7. Column J will tell you whether each task has been created successfully.
+7. Click **Import tasks**.
+
+   - Column J will tell you whether each task has been created successfully.
