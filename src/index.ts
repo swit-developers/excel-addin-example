@@ -23,10 +23,6 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET ??
 import express, {Request, Response} from "express";
 const app = express();
 
-// Apply security best practices with helmet middleware
-import helmet from 'helmet';
-app.use(helmet());
-
 // Apply gzip compression to improve performance
 import compression from 'compression';
 app.use(compression());
@@ -407,7 +403,11 @@ async function getSwitToken(req: Request, refresh = false) {
 }
 
 // Determine whether to use a self-signed certificate or not
+import helmet from 'helmet';
 if (process.env.NODE_ENV === 'production') {
+    // Apply security best practices with helmet middleware
+    app.use(helmet());
+
     // Start the server using HTTPS with a real SSL certificate
     const PORT = 8080;
     const HOST = '0.0.0.0';
