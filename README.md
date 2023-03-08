@@ -61,7 +61,15 @@
 
 3. Upload the **manifest.xml** file from the `client/dist` directory.
 4. Move to the **Home** ribbon, and launch the **Import tasks** add-in.
-5. In the add-in, sign in to your Swit account and create a template.
+
+   ![image](https://user-images.githubusercontent.com/61765788/223765043-9e1f9bd1-12ab-4386-ab97-f499cac7841e.png)
+
+5. In the add-in, create a template and sign in to your Swit account.
+
+   - If the OAuth flow closes automatically, click https://localhost:3000/oauth/authorize?dialog=L3Rhc2twYW5lLmh0bWw= to sign in manually and launch the add-in again. We'll fix this issue soon.
+
 6. In each row, fill in the details of the task to add.
 
    - Make sure each column has the data format specified at https://developers.swit.io/documentation#create-a-task.
+
+7. 
