@@ -4,6 +4,7 @@ steps:
   - name: node
     entrypoint: npm
     args: 
+      - run
       - 'install-all'
 
   - name: node
