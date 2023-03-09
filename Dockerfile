@@ -14,5 +14,5 @@ WORKDIR /app
 # Copy the rest of the working directory contents into the container at /app
 COPY . .
 
-# Run main.py when the container launches
+# Run the main file when the container launches
 ENTRYPOINT ["npm", "run", "build"]

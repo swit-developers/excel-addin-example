@@ -7,18 +7,25 @@ steps:
       - run
       - 'install-all'
 
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: bash
+    args: 
+      - '-c'
+      - |
+        cd client
+
   - name: node
     entrypoint: npm
     args: 
       - run
       - build
 
-  - name: node
-    entrypoint: npx
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: bash
     args: 
-      - webpack
-      - --mode production
-      - --env domain=$_GCR_HOSTNAME
+      - '-c'
+      - |
+        cd ..
 
   # Docker Build
   - name: 'gcr.io/cloud-builders/docker'

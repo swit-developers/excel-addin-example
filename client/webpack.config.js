@@ -5,6 +5,7 @@ const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 const path = require("path");
 const urlDev = "https://localhost:3000";
+const urlProduction = "https://excel-addin-example-fh6rq23r4q-uw.a.run.app";
 
 module.exports = async (env, options) => {
   const dev = options.mode === "development";
@@ -82,7 +83,7 @@ module.exports = async (env, options) => {
               } else {
                 return content
                   .toString()
-                  .replace(new RegExp(urlDev, "g"), env.domain);
+                  .replace(new RegExp(urlDev, "g"), urlProduction);
               }
             },
           },
