@@ -1,18 +1,18 @@
 steps:
   # Install dependencies
   # 참고 : https://cloud.google.com/build/docs/building/build-nodejs?hl=ko
-  - name: Install dependencies
+  - name: install-dependencies
     entrypoint: npm
     args: 
       - 'install-all'
 
-  - name: Build the server
+  - name: server-build
     entrypoint: npm
     args: 
       - run
       - build
 
-  - name: Build the client
+  - name: client-build
     entrypoint: npx
     args: 
       - webpack
