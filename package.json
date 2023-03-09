@@ -6,7 +6,8 @@
     "install-all": "cd client && npm install && cd ../ && npm install",
     "generate-cert": "openssl genrsa -out key.pem && openssl req -new -key key.pem -out csr.pem && openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem",
     "start": "concurrently \"tsc --watch\" \"nodemon ./dist/index.js\"",
-    "build": "tsc"
+    "build": "tsc",
+    "serve": "nodemon ./dist/index.js"
   },
   "dependencies": {
     "compression": "^1.7.4",

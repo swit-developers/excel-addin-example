@@ -15,4 +15,4 @@ WORKDIR /app
 COPY . .
 
 # Run the main file when the container launches
-ENTRYPOINT ["npm", "run", "build"]
+ENTRYPOINT ["npm", "run", "serve"]

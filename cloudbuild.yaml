@@ -14,6 +14,7 @@ steps:
       - |
         cd client
 
+  # Build the cloud
   - name: node
     entrypoint: npm
     args: 
@@ -26,6 +27,13 @@ steps:
       - '-c'
       - |
         cd ..
+
+  # Build the server
+  - name: node
+    entrypoint: npm
+    args: 
+      - run
+      - build
 
   # Docker Build
   - name: 'gcr.io/cloud-builders/docker'
