@@ -59,14 +59,17 @@
 
    ![image](https://user-images.githubusercontent.com/61765788/223762089-7107cb84-6929-4421-8b98-92350f0f9890.png)
 
-3. Upload the **manifest.xml** file from the `client/dist` directory.
+3. Upload the **manifest_local.xml** (server) or **manifest.xml** (local) file from the `manifest` directory.
 4. Move to the **Home** ribbon, and launch the **Import tasks** add-in.
 
    ![image](https://user-images.githubusercontent.com/61765788/223765043-9e1f9bd1-12ab-4386-ab97-f499cac7841e.png)
 
 5. In the add-in, create a template and sign in to your Swit account.
 
-   - If the OAuth flow closes automatically, click https://localhost:3000/oauth/authorize?dialog=L3Rhc2twYW5lLmh0bWw= to sign in manually and launch the add-in again. We'll fix this issue soon.
+   - If the OAuth flow closes automatically, click the following to sign in manually and launch the add-in again. We'll fix this issue soon.
+  
+     - **Local:** https://localhost:3000/oauth/authorize?dialog=L3Rhc2twYW5lLmh0bWw=
+     - **Server:** https://excel-addin-example-fh6rq23r4q-uw.a.run.app/oauth/authorize?dialog=L3Rhc2twYW5lLmh0bWw=
 
 6. In each row, fill in the details of the task to add.
 

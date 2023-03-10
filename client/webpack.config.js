@@ -4,9 +4,6 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 const path = require("path");
-const urlDev = "https://localhost:3000";
-const urlProduction = "https://excel-addin-example-fh6rq23r4q-uw.a.run.app";
-
 module.exports = async (env, options) => {
   const dev = options.mode === "development";
   const config = {
@@ -73,19 +70,6 @@ module.exports = async (env, options) => {
           {
             from: "assets/*",
             to: "assets/[name][ext][query]",
-          },
-          {
-            from: "src/manifest*.xml",
-            to: "[name]" + "[ext]",
-            transform(content) {
-              if (dev) {
-                return content;
-              } else {
-                return content
-                  .toString()
-                  .replace(new RegExp(urlDev, "g"), urlProduction);
-              }
-            },
           },
         ],
       }),
