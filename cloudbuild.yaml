@@ -7,33 +7,21 @@ steps:
       - run
       - 'install-all'
 
-  - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: bash
-    args: 
-      - '-c'
-      - |
-        cd client
-
-  # Build the cloud
-  - name: node
-    entrypoint: npm
-    args: 
-      - run
-      - build
-
-  - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: bash
-    args: 
-      - '-c'
-      - |
-        cd ..
-
   # Build the server
   - name: node
     entrypoint: npm
     args: 
       - run
       - build
+
+  # Build the cloud
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: bash
+    args: 
+      - '-c'
+      - |
+        cd client
+        npm run build
 
   # Docker Build
   - name: 'gcr.io/cloud-builders/docker'

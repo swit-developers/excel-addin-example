@@ -69,7 +69,7 @@ interface AuthorizeRequest extends Request {
 }
 app.get("/oauth/authorize", (req: AuthorizeRequest, res: Response) => {
     const { dialog } = req.query;
-    const host = req.protocol + "://" + req.get("host");
+    const host = "https://" + req.get("host");
     const authorizeUrl = new URL("https://openapi.swit.io/oauth/authorize");
     authorizeUrl.searchParams.append("client_id", CLIENT_ID);
     authorizeUrl.searchParams.append("redirect_uri", host + "/oauth/token");
@@ -91,7 +91,7 @@ interface TokenRequest extends Request {
 }
 app.get("/oauth/token", async (req: TokenRequest, res: Response) => {
     const { code, state } = req.query;
-    const host = req.protocol + "://" + req.get("host");
+    const host = "https://" + req.get("host");
     const tokenResponse = await fetch("https://openapi.swit.io/oauth/token", {
         method: "POST",
         headers: {
