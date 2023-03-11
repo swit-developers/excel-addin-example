@@ -15,7 +15,10 @@ import fetch, {
 // Import the Database module
 import Database from "./database";
 const database = new Database();
-database.set(`CREATE TABLE IF NOT EXISTS tokens (client_token TEXT UNIQUE, user_id VARCHAR(20), expires_at INTEGER, access_token TEXT, refresh_token TEXT)`);
+database.set(`CREATE TABLE IF NOT EXISTS tokens (client_token VARCHAR(300) UNIQUE, user_id VARCHAR(20), expires_at INTEGER, access_token TEXT, refresh_token TEXT)`);
+database.get(`SELECT * FROM tokens`).then((rows) => {
+    console.log(rows);
+});
 
 // Get the environment variables
 require("dotenv").config();

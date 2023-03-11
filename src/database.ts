@@ -1,14 +1,25 @@
+require("dotenv").config();
 import mysql from "mysql2/promise";
 class MySQL {
     private pool: mysql.Pool;
     constructor() {
         console.log("MySQL used.");
-        this.pool = mysql.createPool({
-            user: process.env.DB_USERNAME,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-            socketPath: `/cloudsql/${process.env.DB_CONNECTION_NAME}`
-        });
+        if(process.env.DB_CONNECTION_NAME){
+            this.pool = mysql.createPool({
+                user: process.env.DB_USERNAME,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB_NAME,
+                socketPath: `/cloudsql/${process.env.DB_CONNECTION_NAME}`
+            });
+        }else{
+            this.pool = mysql.createPool({
+                user: process.env.DB_USERNAME,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB_NAME,
+                host: process.env.DB_HOST,
+                port: Number(process.env.DB_PORT)
+            });
+        }
     }
     // retrieve records asynchronously
     async get(
@@ -17,9 +28,9 @@ class MySQL {
     ): Promise<any[]> {
         const connection = await this.pool.getConnection();
         try {
-            const rows = await connection.query(sqlStatement, values);
-            if (Array.isArray(rows)) {
-                return rows;
+            const results = await connection.query(sqlStatement, values);
+            if (Array.isArray(results[0])) {
+                return results[0];
             } else {
                 throw new Error("Unexpected result");
             }
@@ -37,6 +48,7 @@ class MySQL {
             await connection.commit();
         } catch (error) {
             // rollback the transaction if an error occurs
+            console.log(error);
             await connection.rollback();
             throw error;
         } finally {
@@ -83,6 +95,6 @@ class Sqlite3 {
         );
     }
 }
-// export default Database;
 const Database = process.env.DB_CONNECTION_NAME ? MySQL : Sqlite3;
+// const Database = MySQL;
 export default Database;
