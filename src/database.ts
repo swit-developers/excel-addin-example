@@ -10,7 +10,7 @@ class MySQL {
             database: process.env.DB_NAME,
             host: process.env.DB_HOST,
             port: Number(process.env.DB_PORT),
-            socketPath: `/cloudsql/${process.env.DB_CONNECTION_NAME}`
+            socketPath: process.env.DB_CONNECTION_NAME ? `/cloudsql/${process.env.DB_CONNECTION_NAME}`: null
         });
     }
     // retrieve records asynchronously
@@ -87,6 +87,6 @@ class Sqlite3 {
         );
     }
 }
-const Database = process.env.DB_CONNECTION_NAME ? MySQL : Sqlite3;
-// const Database = MySQL;
+// const Database = process.env.DB_CONNECTION_NAME ? MySQL : Sqlite3;
+const Database = MySQL;
 export default Database;
