@@ -1,10 +1,10 @@
 require("dotenv").config();
-import mysql from 'mysql2/promise';
+import mysql from 'mysql2';
 class MySQL {
-    private pool: mysql.Pool;
+    private connection: mysql.Connection;
     constructor() {
         console.log("MySQL used.");
-        this.pool = mysql.createPool({
+        this.connection = mysql.createConnection({
             user: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
@@ -12,40 +12,43 @@ class MySQL {
             port: Number(process.env.DB_PORT),
             socketPath: process.env.DB_CONNECTION_NAME ? `/cloudsql/${process.env.DB_CONNECTION_NAME}`: null
         });
+        
     }
     // retrieve records asynchronously
     async get(
         sqlStatement: string,
         values?: any[]
     ): Promise<any[]> {
-        const connection = await this.pool.getConnection();
-        try {
-            const results = await connection.query(sqlStatement, values);
-            if (Array.isArray(results[0])) {
-                return results[0];
-            } else {
-                throw new Error("Unexpected result");
-            }
-        } finally {
-            connection.release();
-        }
+        const that = this;
+        return new Promise(function (resolve, reject) {
+            that.connection.query(sqlStatement, values, function (error: any, rows: any[] ) {
+                if (error) reject(error);
+                else resolve(rows);
+            });
+        });
     }
     async set(
         sqlStatement: string,
         values?: any[]
     ): Promise<void> {
-        const connection = await this.pool.getConnection();
-        try {
-            await connection.query(sqlStatement, values);
-            await connection.commit();
-        } catch (error) {
-            // rollback the transaction if an error occurs
-            console.log(error);
-            await connection.rollback();
-            throw error;
-        } finally {
-            connection.release();
-        }
+        this.connection.beginTransaction((error: any) => {
+            if (error) throw error;
+            this.connection.query(sqlStatement, values, (error: any, results: any, fields: any) => {
+                if (error) {
+                    return this.connection.rollback(() => {
+                        throw error;
+                    });
+                }
+                this.connection.commit((error: any) => {
+                    if (error) {
+                        return this.connection.rollback(() => {
+                            throw error;
+                        });
+                    }
+                    console.log('Transaction Complete.');
+                });
+            });
+        });
     }
 }
 
@@ -87,6 +90,6 @@ class Sqlite3 {
         );
     }
 }
-// const Database = process.env.DB_CONNECTION_NAME ? MySQL : Sqlite3;
-const Database = MySQL;
+const Database = process.env.DB_CONNECTION_NAME ? MySQL : Sqlite3;
+// const Database = MySQL;
 export default Database;
