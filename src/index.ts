@@ -12,6 +12,11 @@ import fetch, {
     Response as FetchResponse
 } from "node-fetch-commonjs";
 
+// Import the Database module
+import Database from "./database";
+const database = new Database();
+database.set(`CREATE TABLE IF NOT EXISTS tokens (client_token TEXT UNIQUE, user_id VARCHAR(20), expires_at INTEGER, access_token TEXT, refresh_token TEXT)`);
+
 // Get the environment variables
 require("dotenv").config();
 const CLIENT_ID = process.env.CLIENT_ID ?? 
@@ -38,28 +43,6 @@ app.use("/", express.static(htmlDirectory));
 import cookieParser from "cookie-parser";
 app.use(cookieParser());
 
-// Database
-const sqlite3 = require("sqlite3").verbose();
-const dataDirectory = path.join(__dirname, "../.data");
-if (!fs.existsSync(dataDirectory)) {
-    fs.mkdirSync(dataDirectory);
-}
-const db = new sqlite3.Database(path.join(dataDirectory, "swit-tasks.db"));
-db.run(
-    "CREATE TABLE IF NOT EXISTS tokens (client_token TEXT UNIQUE, user_id VARCHAR(20), expires_at INTEGER, access_token TEXT, refresh_token TEXT)",
-    (err: { message: any; }) => {
-        if (err) console.log(err.message);
-    }
-);
-db.query = function (sql: any, params: any) {
-    var that = this;
-    return new Promise(function (resolve, reject) {
-        that.all(sql, params, function (error: any, rows: any) {
-            if (error) reject(error);
-            else resolve({ rows: rows });
-        });
-    });
-};
 
 // get authorization code
 interface AuthorizeRequest extends Request {
@@ -119,7 +102,7 @@ app.get("/oauth/token", async (req: TokenRequest, res: Response) => {
     );
 
     // save the token to the database
-    db.run(
+    await database.set(
         `INSERT INTO tokens VALUES (?, ?, ?, ?, ?)`,
         [
             client_token,
@@ -127,14 +110,7 @@ app.get("/oauth/token", async (req: TokenRequest, res: Response) => {
             decoded.exp,
             tokenObject.access_token,
             tokenObject.refresh_token,
-        ],
-        function (err: { message: any; }) {
-            if (err) {
-                return console.log(err.message);
-            }
-            // get the last insert id
-            console.log(`A row has been inserted with rowid ${this.lastID}`);
-        }
+        ]
     );
 
     const dialogUrl = new URL(host);
@@ -172,38 +148,22 @@ async function refreshAccessToken(req: Request) {
     }
 
     // Update the access and refresh tokens in the database based on the client token
-    db.run(
+    await database.set(
         `UPDATE tokens SET access_token = ?, refresh_token = ? WHERE client_token = ?`,
         [
             tokenObject.access_token,
             tokenObject.refresh_token,
             req.cookies.client_token,
-        ],
-        function (err: { message: any; }) {
-            if (err) {
-                console.log(err.message);
-                return false;
-            }
-            // get the last insert id
-            console.log(`A row has been updated with rowid ${this.lastID}`);
-        }
+        ]
     );
     return true;
 }
 
 // Sign the user out to delete the cookie and the token from the database
-app.post("/api/signout", (req, res) => {
-    db.run(
+app.post("/api/signout", async (req, res) => {
+    await database.set(
         `DELETE FROM tokens WHERE client_token = ?`,
-        [req.cookies.client_token],
-        function (err: { message: any; }) {
-            if (err) {
-                console.log(err.message);
-                return false;
-            }
-            // get the last insert id
-            console.log(`A row has been deleted with rowid ${this.lastID}`);
-        }
+        [req.cookies.client_token]
     );
     res.clearCookie("client_token");
     return res.status(204).send();
@@ -390,11 +350,11 @@ async function getSwitToken(req: Request, refresh = false) {
     try {
         // Get the access token from the database
         const tokenColumnName = refresh ? "refresh_token" : "access_token";
-        const tokenRecords = await db.query(
+        const tokenRecords = await database.get(
             `SELECT ${tokenColumnName} FROM tokens WHERE client_token = ?`,
             [req.cookies.client_token]
         );
-        const token = tokenRecords.rows[0][tokenColumnName];
+        const token = tokenRecords[0][tokenColumnName];
         return token;
     } catch (err) {
         console.log(err.message);

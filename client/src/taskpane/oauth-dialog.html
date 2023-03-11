@@ -11,11 +11,13 @@
         <script type="text/javascript" defer="true">
             const url = new URL(location);
             if(url.searchParams.get("initiating")){
-                location.href =  "/oauth/authorize?dialog=" + btoa(location.pathname);
+                window.opener = null;
+                location.href = "/oauth/authorize?dialog=" + btoa(location.pathname);
             }else{
                 const token = url.searchParams.get("token") || "";
                 localStorage.setItem("token", token);
-                document.querySelector('#message').innerHTML = "로그인 완료. 창을 닫아주세요.";
+                window.close();
+                // document.querySelector('#message').innerHTML = "로그인 완료. 창을 닫아주세요.";
             }
         </script>
     </body>

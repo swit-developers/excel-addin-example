@@ -61,10 +61,13 @@ function eventHandler(arg) {
 }
 
 export function openDialog() {
-  // console.log(Office.context.platform);
   Office.context.ui.displayDialogAsync(
     location.origin + "/oauth-dialog.html?initiating=true",
-    { height: 70, width: 50 },
+    {
+      height: 70,
+      width: 50,
+      promptBeforeOpen: false
+    },
     dialogCallback
   );
 }

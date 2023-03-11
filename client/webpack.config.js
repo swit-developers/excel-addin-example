@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
@@ -8,6 +7,9 @@ module.exports = async (env, options) => {
   const dev = options.mode === "development";
   const config = {
     devtool: "source-map",
+    // optimization: {
+    //   minimize: false
+    // },
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
       taskpane: ["./src/taskpane/taskpane.ts", "./src/taskpane/taskpane.html"],
