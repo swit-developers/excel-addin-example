@@ -1,5 +1,5 @@
 # node.js image to use.
-FROM node:19.7.0-buster-slim
+FROM node:latest
 
 # Set the working directory to /app
 WORKDIR /app
