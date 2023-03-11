@@ -66,11 +66,6 @@
 
 5. In the add-in, create a template and sign in to your Swit account.
 
-   - If the OAuth flow closes automatically, click the following to sign in manually and launch the add-in again. We'll fix this issue soon.
-  
-     - **Local:** https://localhost:3000/oauth/authorize?dialog=L3Rhc2twYW5lLmh0bWw=
-     - **Server:** https://excel-addin-example-fh6rq23r4q-uw.a.run.app/oauth/authorize?dialog=L3Rhc2twYW5lLmh0bWw=
-
 6. In each row, fill in the details of the task to add.
 
    - Make sure each column has the data format specified at https://developers.swit.io/documentation#create-a-task.
